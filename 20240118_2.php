@@ -34,7 +34,16 @@ $sql .= $cols . "values" . $vals;
     return $this->pdo->exec($sql);
 }
 function del($id){
-    
+    $sql="delete from `$this->table` where ";
+    if(is_array($id)){
+$tmp=$this->a2s($id);
+$sql .=  join(" && ",$tmp);
+    }elseif(is_numeric($id)){
+$sql .="`id`='$id'";
+    }else{
+        echo "x type";
+    }
+    return $this->pdo->exec($sql);
 }
 function find($id){
     $sql = "select * from `$this->table`";
@@ -50,14 +59,48 @@ $sql .= " where `id`='$id'";
     return $row;
 }
 
-private function sql_all($sql,$array,$other)
-function q($sql)
-function all($where='',$other='')
-function count($where='',$other='')
- private function math($math,$col='',$array='',$other='')
-function sum($col='',$where='',$other='')
-function max($col='',$where='',$other='')
-function min($col='',$where='',$other='')
+private function sql_all($sql,$array,$other){
+    if(isser($this->table) && !empty($this->table)){
+if(is_array($array)){
+    if(!empty($array)){
+        $tmp=$this->a2s($array);
+        $sql .= " where " . join(" && ",$tmp);
+    }
+}else{
+    $sql .= " $array ";
+}
+    }else{
+        echo "none table";
+    }
+    return $sql .=$other;
+}
+function q($sql){
+    return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
+function all($where='',$other=''){
+    $sql ="select * from `$this->table`";
+    $sql=$this->pod->sql_all($sql,$where,$other);
+    return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
+function count($where='',$other=''){
+    $sql="select count(*) from `$this->table`";
+    $sql=$this->pdo->sql_all($sql,$where,$other);
+    return $this->pdo->query($sql)->fetchColumn();
+}
+ private function math($math,$col='',$array='',$other=''){
+    $sql="select $math(`$col`) from `$this->table`";
+    $sql=$this->pdo->sql_all($sql,$array,$other);
+    return $this->pdo->query($sql)->fetchColumn();
+ }
+function sum($col='',$where='',$other=''){
+    return$this->math('sum',$col,$where,$other);
+}
+function max($col='',$where='',$other=''){
+    return$this->math('max',$col,$where,$other);
+}
+function min($col='',$where='',$other=''){
+    return$this->math('min',$col,$where,$other);
+}
 
 
 }
