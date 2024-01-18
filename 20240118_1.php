@@ -25,7 +25,7 @@ class DB
             if (!empty($array)) {
                 $tmp = $this->a2s($array);
             } else {
-                echo "錯誤:缺少要編輯的欄位陣列";
+                echo "空的";
             }
             $sql .= join(",", $tmp);
             $sql .= " where `id` = '{$array['id']}'";
@@ -43,10 +43,10 @@ class DB
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= " where " . join(" && ", $tmp);
-        } else if (is_numeric($id)) {
-            $sql .= " where  `id` ='$id'";
+        } elseif (is_numeric($id)) {
+            $sql .= " where `id`='$id'";
         } else {
-            echo "錯誤:參數的資料型態必須是數字或陣列";
+            echo "錯誤";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
@@ -57,10 +57,10 @@ class DB
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
-        } else if (is_numeric($id)) {
+        } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數資料型態必須是數字或陣列";
+            echo "錯誤";
         }
         return $this->pdo->exec($sql);
     }
@@ -73,11 +73,11 @@ class DB
                     $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
-                $sql .= " $array";
+                $sql .= " $array ";
             }
             return $sql .= $other;
         } else {
-            echo "錯誤:沒有指定的資料表名稱";
+            echo "沒有資料表";
         }
     }
     function q($sql)
