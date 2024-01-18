@@ -1,5 +1,5 @@
 <?php
-timezone set ("Asia/Taipei");
+date_default_timezone_set ("Asia/Taipei");
 session_start();
 class DB{
     protected $dsn="mysql:host=location;charset=utf8;dbname=db08";
@@ -8,17 +8,53 @@ class DB{
 function __construct($table)
 {
     $this->table=$table;
-    $pdo= new PDO($dsn,"root",'');
+    $this->pdo= new PDO($this->dsn,"root",'');
 }
-private function a2s($array)
-function find($id)
-function save($id,$where='',$other='')
-function del($id,$where='',$other='')
-function q($sql)
-function all($id)
+private function a2s($array){
+    foreach($array as $col=>$value){
+        $tmp[]="`$col`='$value'";
+    }return $tmp;
+}
+function save($array){
+    if(isset($array['id'])){
+        $sql ="update `$this->table` set ";
+if(!empty($array)){
+$tmp =$this->a2s($array);
+}else{
+    echo "空的";
+}
+$sql .= join(",",$tmp);
+$sql .= " where `id`='{$array['id']}'";
+    }else{
+$sql="insert into `$this->table`";
+$cols="`(" . join("`,`",array_keys($array)) . ")`";
+$vals="'(" . join("','",$array) . ")'";
+$sql .= $cols . "values" . $vals;
+    }
+    return $this->pdo->exec($sql);
+}
+function del($id){
+    
+}
+function find($id){
+    $sql = "select * from `$this->table`";
+    if(is_array($id)){
+$tmp=$this->a2s($id);
+$sql .= " where ". join(" && ",$tmp);
+    }elseif(is_numeric($id)){
+$sql .= " where `id`='$id'";
+    }else{
+        echo "X type";
+    }
+    $row=$this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+    return $row;
+}
+
 private function sql_all($sql,$array,$other)
-function count()
- private function math($math,$col='',$array,$other='')
+function q($sql)
+function all($where='',$other='')
+function count($where='',$other='')
+ private function math($math,$col='',$array='',$other='')
 function sum($col='',$where='',$other='')
 function max($col='',$where='',$other='')
 function min($col='',$where='',$other='')
