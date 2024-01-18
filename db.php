@@ -52,7 +52,8 @@ class DB
         } else {
             echo "錯誤:參數的資料型態必須是數字或陣列";
         }
-        return $row = $this->q($sql);
+        $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        return $row;
     }
     function del($id)
     {

@@ -53,7 +53,9 @@ class DB
         } else {
             echo "錯誤";
         }
-        return $row = $this->q($sql);
+        $row=$this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        return $row;
+ 
     }
     function del($id)
     {

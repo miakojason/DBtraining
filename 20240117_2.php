@@ -65,7 +65,8 @@ class DB
         } else {
             echo "錯誤";
         }
-        return $this->pdo->exec($sql);
+        $row=$this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        return $row;
     }
     private function sql_all($sql, $array, $other)
     {
