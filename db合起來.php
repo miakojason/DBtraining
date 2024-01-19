@@ -8,14 +8,12 @@ class DB
     protected $table;
     public function __construct($table){
         $this->table = $table;
-        $this->pdo = new PDO($this->dsn, 'root', '');
-    }
+        $this->pdo = new PDO($this->dsn, 'root', '');}
     private function a2s($array){
         foreach ($array as $col => $value) {
             $tmp[] = "`$col`='$value'";
         }
-        return $tmp;
-    }
+        return $tmp;}
     function save($array){
         if (isset($array['id'])) {
             $sql = "update `$this->table` set ";
@@ -32,8 +30,7 @@ class DB
             $vals = "('" . join("','", $array) . "')";
             $sql .= $cols . "values" . $vals;
         }
-        return $this->pdo->exec($sql);
-    }
+        return $this->pdo->exec($sql);}
     function del($id){
         $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
@@ -44,8 +41,7 @@ class DB
         } else {
             echo "錯誤:參數資料型態必須是數字或陣列";
         }
-        return $this->pdo->exec($sql);
-    }
+        return $this->pdo->exec($sql);}
     function find($id) {
         $sql = "select * from `$this->table`";
         if (is_array($id)) {
@@ -57,8 +53,7 @@ class DB
             echo "錯誤:參數的資料型態必須是數字或陣列";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
-        return $row;
-    }
+        return $row;}
     private function sql_all($sql, $array, $other){
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
@@ -72,44 +67,34 @@ class DB
             return $sql .= $other;
         } else {
             echo "錯誤:沒有指定的資料表名稱";
-        }
-    }
+        }}
     function q($sql){
-        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    }
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);}
     function all($where = '', $other = ''){
         $sql = "select * from `$this->table`";
         $sql = $this->sql_all($sql, $where, $other);
-        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    }
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);}
     function count($where = '', $other = ''){
         $sql = "select count(*) from `$this->table`";
         $sql = $this->sql_all($sql, $where, $other);
-        return $this->pdo->query($sql)->fetchColumn();
-    }
+        return $this->pdo->query($sql)->fetchColumn();}
     private function math($math, $col, $array = '', $other = ''){
         $sql = "select $math(`$col`) from `$this->table`";
         $sql = $this->sql_all($sql, $array, $other);
-        return $this->pdo->query($sql)->fetchColumn();
-    }
+        return $this->pdo->query($sql)->fetchColumn();}
     function sum($col = '', $where = '', $other = ''){
-        return $this->math('sum', $col, $where, $other);
-    }
+        return $this->math('sum', $col, $where, $other);}
     function max($col = '', $where = '', $other = ''){
-        return $this->math('max', $col, $where, $other);
-    }
+        return $this->math('max', $col, $where, $other);}
     function min($col = '', $where = '', $other = ''){
-        return $this->math('min', $col, $where, $other);
-    }
+        return $this->math('min', $col, $where, $other);}
 }
 function dd($array){
     echo "<pre>";
     print_r($array);
-    echo "</pre>";
-}
+    echo "</pre>";}
 function to($url){
-    header("location:$url");
-}
+    header("location:$url");}
 $Title = new DB('titles');
 $Total = new DB('total');
 $Bottom = new DB('bottom');
