@@ -15,11 +15,36 @@ class DB{
         }
         return$tmp;
     }
-    function save($array)
+    function save($array){
+        $sql="update from `$this->table` set where "
+        if(is_array($array[id])){
+$tmp=$this->a2s($sql);
+$cols="(`". join("`,`",array_keys($array)) ."`)";
+$vals="('". join("','",$array) ."')";
+$sql.=" $cols " . "values" . $vals;
+        }elseif(is_numeric($array)){
+$sql .=$array;
+        }
+        return;
+        else{
+            echo "x type";
+        }
+      
+    }
     function del($id)
+    if(is_array($id)){
+
+    }elseif(is_numeric($id)){
+        $sql.=`id`='$id';
+    }
+    return
     function find($id)//fetch
     private function sql_all($sql,$where='',$other='')
-    if(isset($this->table) && !empty($this->table))
+    if(isset($this->table) && !empty($this->table)){
+return
+    }else{
+        echo "x table";
+    }
     function q($sql){
         return $this->pdo->query($sql)->fetchAll(PDO::fetchassoc);
     }
