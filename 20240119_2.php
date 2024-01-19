@@ -16,29 +16,52 @@ class DB{
         return$tmp;
     }
     function save($array){
-        $sql="update from `$this->table` set where "
         if(is_array($array[id])){
-$tmp=$this->a2s($sql);
-$cols="(`". join("`,`",array_keys($array)) ."`)";
+            $sql="update from `$this->table` set ";
+            if(!empty($array)){
+                $tmp=$this->a2s($sql);
+            }else{
+                echo "空的";
+            }
+            $sql .=join(",",$tmp);
+            $sql .=" where `id`='{$array['id']}'";
+
+        }else{
+            $sql="insert into `$this->table`";
+            $cols="(`". join("`,`",array_keys($array)) ."`)";
 $vals="('". join("','",$array) ."')";
 $sql.=" $cols " . "values" . $vals;
-        }elseif(is_numeric($array)){
-$sql .=$array;
+
         }
-        return;
-        else{
-            echo "x type";
-        }
+        return$this->pdo->exec($sql);
+        
       
     }
-    function del($id)
-    if(is_array($id)){
-
-    }elseif(is_numeric($id)){
-        $sql.=`id`='$id';
+    function del($id){
+        $sql="delete from `$this->table` where ";
+        if(is_array($id)){
+$tmp=$this->a2s($id);
+$sql.=join(" && ",$id);
+        }elseif(is_numeric($id)){
+            $sql.="`id`='$id'";
+        }else{
+            echo " x type";
+        }
+        return $this->pdo->exec($sql);
     }
-    return
-    function find($id)//fetch
+   
+    function find($id){
+        $sql="select * from `$this->table`";
+        if(is_array($id)){
+$tmp=$this->a2s($id);
+$sql.=" where " . join(" && ",$tmp);
+        }elseif(is_numeric()){
+$sql .=" where "
+        }else{
+            echo"x type";
+        }
+        return
+    }
     private function sql_all($sql,$where='',$other='')
     if(isset($this->table) && !empty($this->table)){
 return
