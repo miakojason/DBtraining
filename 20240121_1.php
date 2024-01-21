@@ -25,10 +25,10 @@ class DB
             if (!empty($array)) {
                 $tmp = $this->a2s($array);
             } else {
-                echo "錯誤:缺少要編輯的欄位陣列";
+                echo "空的";
             }
             $sql .= join(",", $tmp);
-            $sql .= " where `id` = '{$array['id']}'";
+            $sql .= " where `id`='{$array['id']}'";
         } else {
             $sql = "insert into `$this->table`";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
@@ -37,16 +37,17 @@ class DB
         }
         return $this->pdo->exec($sql);
     }
+
     function del($id)
     {
         $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
-        } else if (is_numeric($id)) {
+        } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數資料型態必須是數字或陣列";
+            echo "x type";
         }
         return $this->pdo->exec($sql);
     }
@@ -56,10 +57,10 @@ class DB
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
-        } else if (is_numeric($id)) {
-            $sql .= " `id` ='$id'";
+        } elseif (is_numeric($id)) {
+            $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數的資料型態必須是數字或陣列";
+            echo "x type";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
@@ -73,11 +74,11 @@ class DB
                     $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
-                $sql .= " $array";
+                $sql .= " $array ";
             }
             return $sql .= $other;
         } else {
-            echo "錯誤:沒有指定的資料表名稱";
+            echo "x table";
         }
     }
     function q($sql)
@@ -86,7 +87,7 @@ class DB
     }
     function all($where = '', $other = '')
     {
-        $sql = "select * from `$this->table`";
+        $sql = "select *  from `$this->table`";
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -96,7 +97,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    private function math($math, $col, $array = '', $other = '')
+    function math($math, $col, $array='', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table`";
         $sql = $this->sql_all($sql, $array, $other);
@@ -134,3 +135,4 @@ $News = new DB('news');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
+?>
