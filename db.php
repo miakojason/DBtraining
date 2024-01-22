@@ -134,3 +134,14 @@ $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
+?>
+<!-- 檔案 -->
+<?php
+$do=$_GET['do']??'main';
+$file="./front/{$do}.php";// $file="./bakc/{$do}.php";
+if(file_exists($file)){
+include $file;
+}else{
+    include "./fron/main.php";
+}
+?>
