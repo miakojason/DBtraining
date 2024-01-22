@@ -21,17 +21,16 @@ class DB
     function save($array)
     {
         if (isset($array['id'])) {
-            $sql = "update from `$this->table` set ";
-            if (is_array($array)) {
-                if (!empty($array)) {
-                    $tmp = $this->a2s($array);
-                    $sql .= " where " . join(",", $tmp);
-                }
+            $sql = "update `$this->table` set ";
+            if (!empty($array)) {
+                $tmp = $this->a2s($array);
             } else {
-                $sql .= " where `id`='{$array}'";
+                echo"空的";
             }
+            $sql .= join(",", $tmp);
+            $sql .= " where `id`='{$array['id']}'";
         } else {
-            $sql = "insert into  from `$this->table`";
+            $sql = "insert into `$this->table`";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
             $sql .= $cols . "values" . $vals;
@@ -53,7 +52,7 @@ class DB
     }
     function find($id)
     {
-        $sql = "select from `$this->table` where ";
+        $sql = "select * from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
@@ -65,22 +64,21 @@ class DB
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
-
-    function sql_all($sql, $array, $other)
-    {if(isset($this->table) && !empty($this->table)){
-if(is_array($array)){
-    if(!empty($array)){
-        $tmp=$this->a2s($array);
-        $sql.=" where " . join(" && ",$tmp);
-    }
-
-}else{
-    $sql.=" $array ";
-}return$sql.=$other;
-    }else{
-        echo"x table";
-    }
-    
+    private function sql_all($sql, $array, $other)
+    {
+        if (isset($this->table) && !empty($this->table)) {
+            if (is_array($array)) {
+                if (!empty($array)) {
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
+                }
+            } else {
+                $sql .= " $array ";
+            }
+            return $sql .= $other;
+        } else {
+            echo "x table";
+        }
     }
     function q($sql)
     {
@@ -98,9 +96,9 @@ if(is_array($array)){
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    function math($math, $col, $array = '', $other = '')
+    private function math($math, $col, $array = '', $other = '')
     {
-        $sql = "select $math(`$col`) form `$this->table`";
+        $sql = "select $math(`$col`) from `$this->table`";
         $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
@@ -128,10 +126,10 @@ function to($url)
     header("location:$url");
 }
 $Title = new DB('titles');
-$Totla = new DB('total');
+$Total = new DB('total');
 $Bottom = new DB('bottom');
-$Newss = new DB('news');
 $Image = new DB('image');
+$News = new DB('news');
 $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');

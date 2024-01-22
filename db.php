@@ -137,11 +137,11 @@ $Admin = new DB('admin');
 ?>
 <!-- 檔案 -->
 <?php
-$do=$_GET['do']??'main';
-$file="./front/{$do}.php";// $file="./bakc/{$do}.php";
-if(file_exists($file)){
-include $file;
-}else{
-    include "./fron/main.php";
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //or back
+if (file_exists($file)) {
+    include $file;
+} else {
+    include "./front/main.php";
 }
 ?>
