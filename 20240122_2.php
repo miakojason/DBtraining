@@ -11,35 +11,57 @@ class DB
         $this->table = $table;
         $this->pdo = new PDO($this->dsn, 'root', '');
     }
-    private function a2s($array){
-
+    private function a2s($array)
+    {foreach($array as $col=>$value){
+        $tmp[]="`$col`='$value'";
     }
-    function save($array){
-
+    return$tmp;
     }
-    function del($id){
-
+    function save($array)
+    {
     }
-    function find($id){
-
+    function del($id)
+    {
     }
-    function sql_all($sql,$array,$other){
-
+    function find($id)
+    {
     }
-    function q($sql){
-
+    function sql_all($sql, $array, $other)
+    {
     }
-    function all($where='',$other=''){
-
+    function q($sql)
+    {
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    function count($where='',$other=''){
-
+    function all($where = '', $other = '')
+    {
+        $sql = "select * from `$this->table`";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    function math($math,$col,$array='',$other=''){
-
+    function count($where = '', $other = '')
+    {
+        $sql = "select count(*) from `$this->table`";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchColumn();
     }
-    function sum($col='',$where='',$other=''){
-
+    function math($math, $col, $array = '', $other = '')
+    {
+        $sql = "select $math(`$col`) form `$this->table`";
+        $sql = $this->sql_all($sql, $array, $other);
+        return $this->pdo->query($sql)->fetchColumn();
+    }
+    function sum($col = '', $where = '', $other = '')
+    {
+        return $this->math('sum', $col, $where, $other);
+    }
+    function max($col = '', $where = '', $other = '')
+    {
+        return $this->math('max', $col, $where, $other);
+    }
+    function min($col = '', $where = '', $other = '')
+    {
+        return $this->math('min', $col, $where, $other);
     }
 }
 function dd($array)
@@ -63,11 +85,11 @@ $Ad = new DB('ad');
 $Admin = new DB('admin');
 ?>
 <?php
-$do=$_GET['do']??'main';
-$file="./front/{$do}.php";//or back
-if(file_exists($file)){
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //or back
+if (file_exists($file)) {
     include $file;
-}else{
+} else {
     include "./front/main.php";
 }
 ?>
