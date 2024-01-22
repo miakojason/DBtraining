@@ -12,21 +12,31 @@ class DB
         $this->pdo = new PDO($this->dsn, 'root', '');
     }
     private function a2s($array)
-    {foreach($array as $col=>$value){
-        $tmp[]="`$col`='$value'";
-    }
-    return$tmp;
+    {
+        foreach ($array as $col => $value) {
+            $tmp[] = "`$col`='$value'";
+        }
+        return $tmp;
     }
     function save($array)
-    {if(isset($array['id'])){
-
-    }else{
-        $sql="insert into  from `$this->table`";
-        $cols="(`" . join("`,`",array_keys($array)) . "`)";
-        $vals="('" . join("','",$array) . "')";
-        $sql.=$cols . "values" . $vals;
-    }
-    return $this->pdo->exec($sql);
+    {
+        if (isset($array['id'])) {
+            $sql = "update from `$this->table` set ";
+            if (is_array($array)) {
+                if(!empty($array)){
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(",", $tmp);
+                }
+            } else {
+                $sql .= " where `id`='{$array}'";
+            }
+        } else {
+            $sql = "insert into  from `$this->table`";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql .= $cols . "values" . $vals;
+        }
+        return $this->pdo->exec($sql);
     }
     function del($id)
     {
