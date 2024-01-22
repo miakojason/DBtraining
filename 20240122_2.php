@@ -18,7 +18,15 @@ class DB
     return$tmp;
     }
     function save($array)
-    {
+    {if(isset($array['id'])){
+
+    }else{
+        $sql="insert into  from `$this->table`";
+        $cols="(`" . join("`,`",array_keys($array)) . "`)";
+        $vals="('" . join("','",$array) . "')";
+        $sql.=$cols . "values" . $vals;
+    }
+    return $this->pdo->exec($sql);
     }
     function del($id)
     {
