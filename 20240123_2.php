@@ -3,7 +3,7 @@ date_default_timezone_set("Asia/Taipei");
 session_start();
 class DB
 {
-    protected $dsn = "mysql:host=loaclhost;charset=utf8;dbname=db08";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=db08";
     protected $pdo;
     protected $table;
     public function __construct($table)
@@ -28,7 +28,7 @@ class DB
                 echo "空的";
             }
             $sql .= join(",", $tmp);
-            $sql .= " where `id` = {$array['id']}";
+            $sql .= " where `id` = '{$array['id']}'";
         } else {
             $sql = "insert into `$this->table`";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
@@ -68,8 +68,10 @@ class DB
     {
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
-                $tmp = $this->a2s($array);
-                $sql .= " where " . join(" && ", $tmp);
+                if(!empty($array)){
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
+                }
             } else {
                 $sql .= " $array ";
             }
@@ -102,15 +104,15 @@ class DB
     }
     function sum($col = '', $where = '', $other = '')
     {
-        return $this->pdo->query('sum', $col, $where, $other);
+        return $this->math('sum', $col, $where, $other);
     }
     function max($col = '', $where = '', $other = '')
     {
-        return $this->pdo->query('max', $col, $where, $other);
+        return $this->math('max', $col, $where, $other);
     }
     function min($col = '', $where = '', $other = '')
     {
-        return $this->pdo->query('min', $col, $where, $other);
+        return $this->math('min', $col, $where, $other);
     }
 }
 function dd($array)
