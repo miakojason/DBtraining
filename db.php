@@ -73,7 +73,7 @@ class DB
                     $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
-                $sql .= " $array";
+                $sql .= " $array ";
             }
             return $sql .= $other;
         } else {

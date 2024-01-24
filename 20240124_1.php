@@ -31,15 +31,15 @@ class DB
             $sql .= " where `id`='{$array['id']}'";
         } else {
             $sql = "insert into `$this->table`";
-            $cols = "(`" . join("`,`",array_keys($array)) . "`)";
-            $vals = "('" . join("','",$array) . "')";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
             $sql .= $cols . "values" . $vals;
         }
         return $this->pdo->exec($sql);
     }
     function del($id)
     {
-        $sql = "delete * from `$this->table` where";
+        $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
@@ -52,7 +52,7 @@ class DB
     }
     function find($id)
     {
-        $sql = "select * from `$this->table` where";
+        $sql = "select * from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
@@ -72,8 +72,10 @@ class DB
                     $tmp = $this->a2s($array);
                     $sql .= " where " . join(" && ", $tmp);
                 }
-                return $sql .= $other;
+            } else {
+                $sql .= " $array ";
             }
+            return $sql .= $other;
         } else {
             echo "x table";
         }
@@ -96,7 +98,7 @@ class DB
     }
     private function math($math, $col, $array = '', $other = '')
     {
-        $sql = "select $math(`$col` from `$this->table`)";
+        $sql = "select $math(`$col`) from `$this->table`";
         $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
