@@ -125,6 +125,13 @@ function to($url)
 {
     header("location:$url");
 }
+if(isset($_GET['do'])){
+    if(isset(${ucfirst($_GET['do'])})){
+        $DB=${ucfirst($_GET['do'])};
+    }
+}else{
+    $DB=$Title;
+}
 $Title = new DB('titles');
 $Total = new DB('total');
 $Bottom = new DB('bottom');
