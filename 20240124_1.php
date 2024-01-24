@@ -8,7 +8,7 @@ class DB
     protected $table;
     public function __construct($table)
     {
-        $this->pdo = $table;
+        $this->table = $table;
         $this->pdo = new PDO($this->dsn, 'root', '');
     }
     private function a2s($array)
@@ -31,8 +31,8 @@ class DB
             $sql .= " where `id`='{$array['id']}'";
         } else {
             $sql = "insert into `$this->table`";
-            $cols = "";
-            $vals = "";
+            $cols = "(`" . join("`,`",array_keys($array)) . "`)";
+            $vals = "('" . join("','",$array) . "')";
             $sql .= $cols . "values" . $vals;
         }
         return $this->pdo->exec($sql);
