@@ -23,10 +23,10 @@ class DB
         if (isset($array['id'])) {
             if (!empty($array)) {
                 $sql = "update `$this->table` set ";
-                $tmp=$this->a2s($array);
-                $sql.=join(",",$tmp);
-                $sql.=" where `id`='{$array['id']}'";
-            }else{
+                $tmp = $this->a2s($array);
+                $sql .= join(",", $tmp);
+                $sql .= " where `id`='{$array['id']}'";
+            } else {
                 echo "空的";
             }
         } else {
@@ -68,8 +68,8 @@ class DB
             if (is_array($array)) {
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
                 }
-                $sql .= " where " . join(" && ", $tmp);
             } else {
                 $sql .= " $array ";
             }
@@ -88,7 +88,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    function count($where = '', $other)
+    function count($where = '', $other = '')
     {
         $sql = "select count(*) from `$this->table`";
         $sql = $this->sql_all($sql, $where, $other);
@@ -126,20 +126,19 @@ function to($url)
 $Title = new DB('titles');
 $Total = new DB('total');
 $Bottom = new DB('bottom');
-$News = new DB('news');
 $Image = new DB('image');
+$News = new DB('news');
 $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
 ?>
 <?php
-$do=$_GET['do']??'main';
-$file="./front/{$do}.php";//or back
-if(file_exists($file)){
-include $file;
-}else{
-include "./front/main.php";
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //or back
+if (file_exists($file)) {
+    include $file;
+} else {
+    include "./front/main.php";
 }
-
 ?>
