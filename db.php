@@ -125,13 +125,6 @@ function to($url)
 {
     header("location:$url");
 }
-if(isset($_GET['do'])){
-    if(isset(${ucfirst($_GET['do'])})){
-        $DB=${ucfirst($_GET['do'])};
-    }
-}else{
-    $DB=$Title;
-}
 $Title = new DB('titles');
 $Total = new DB('total');
 $Bottom = new DB('bottom');
@@ -141,6 +134,14 @@ $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
+//這段大寫要放後面放$Ttite前面會先找不到錯誤訊息
+if(isset($_GET['do'])){
+    if(isset(${ucfirst($_GET['do'])})){
+        $DB=${ucfirst($_GET['do'])};
+    }
+}else{
+    $DB=$Title;
+}
 ?>
 <!-- 檔案 -->
 <?php
