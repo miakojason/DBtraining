@@ -135,6 +135,11 @@ $Admin = new DB('admin');
 ?>
 <?php
 $do=$_GET['do']??'main';
-$file=
+$file="./front/{$do}.php";//or back
+if(file_exists($file)){
+include $file;
+}else{
+include "./front/main.php";
+}
 
 ?>
