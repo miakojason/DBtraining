@@ -28,4 +28,3 @@ foreach ($_POST['id'] as $key => $id) {
     }
 }
 to("../back.php?do=$table");
-?>
