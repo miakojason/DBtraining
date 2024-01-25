@@ -3,7 +3,7 @@ date_default_timezone_set("Asia/Taipei");
 session_start();
 class DB
 {
-    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=db08;";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbnane=db08;";
     protected $pdo;
     protected $table;
     public function __construct($table)
@@ -21,14 +21,12 @@ class DB
     function save($array)
     {
         if (isset($array['id'])) {
-            $sql = "update `$this->table` set ";
             if (!empty($array)) {
+                $sql = "update `$this->table` set ";
                 $tmp = $this->a2s($array);
-            } else {
-                echo "錯誤:缺少要編輯的欄位陣列";
+                $sql .= join(",", $tmp);
+                $sql .= " where `id`={$array['id']}";
             }
-            $sql .= join(",", $tmp);
-            $sql .= " where `id` = '{$array['id']}'";
         } else {
             $sql = "insert into `$this->table`";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
@@ -43,12 +41,12 @@ class DB
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
-        } else if (is_numeric($id)) {
+        } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數資料型態必須是數字或陣列";
+            echo "x type";
         }
-        return $this->pdo->exec($sql);
+        return $this->pdo->exec($id);
     }
     function find($id)
     {
@@ -56,35 +54,35 @@ class DB
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
-        } else if (is_numeric($id)) {
+        } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數的資料型態必須是數字或陣列";
+            echo "x type";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
-    private function sql_all($sql, $array, $other)
+    function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
-                    $sql .= " where " . join(" && ", $tmp);
+                    $sql .= join(" && ", $tmp);
                 }
             } else {
                 $sql .= " $array ";
             }
             return $sql .= $other;
         } else {
-            echo "錯誤:沒有指定的資料表名稱";
+            echo "x table";
         }
     }
     function q($sql)
     {
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    function all($where = '', $other = '')
+    function all($where = '', $other)
     {
         $sql = "select * from `$this->table`";
         $sql = $this->sql_all($sql, $where, $other);
@@ -96,7 +94,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    private function math($math, $col, $array = '', $other = '')
+    function math($math, $col, $array = '', $other)
     {
         $sql = "select $math(`$col`) from `$this->table`";
         $sql = $this->sql_all($sql, $array, $other);
@@ -134,16 +132,12 @@ $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
-//這段大寫要放後面放$Ttite前面會先找不到錯誤訊息
-if (isset($_GET['do'])) {
-    if (isset(${ucfirst($_GET['do'])})) {
-        $DB = ${ucfirst($_GET['do'])};
-    }
-} else {
-    $DB = $Title;
+
+if (isset($_GET['table'])) {
+    $table = $_GET('table');
+    $DB = ${ucfirst($table)};
 }
 ?>
-<!-- 檔案 -->
 <?php
 $do = $_GET['do'] ?? 'main';
 $file = "./front/{$do}.php"; //or back
