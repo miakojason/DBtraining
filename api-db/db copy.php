@@ -30,7 +30,7 @@ class DB
                 echo "空的";
             }
         } else {
-            $sql = "insert into `$this->table`";
+            $sql = "insert into `$this->table` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
             $sql .= $cols . "values" . $vals;
@@ -135,12 +135,12 @@ $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
 //這段大寫要放後面放$Ttite前面會先找不到錯誤訊息
-if(isset($_GET['do'])){
-    if(isset(${ucfirst($_GET['do'])})){
-        $DB=${ucfirst($_GET['do'])};
+if (isset($_GET['do'])) {
+    if (isset(${ucfirst($_GET['do'])})) {
+        $DB = ${ucfirst($_GET['do'])};
     }
-}else{
-    $DB=$Title;
+} else {
+    $DB = $Title;
 }
 ?>
 <!-- 檔案 -->

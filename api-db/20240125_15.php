@@ -19,22 +19,23 @@ class DB
         return $tmp;
     }
     function save($array)
-    { if(isset($array['id'])){
-        if(!empty($array)){
-            $sql="update `$this->table` set ";
-            $tmp=$this->a2s($array);
-            $sql.=join(",",$tmp);
-            $sql.=" where `id`='{$array['id']}'";
-        }else{
-            echo "陣列有空的";
+    {
+        if (isset($array['id'])) {
+            if (!empty($array)) {
+                $sql = "update `$this->table` set ";
+                $tmp = $this->a2s($array);
+                $sql .= join(",", $tmp);
+                $sql .= " where `id`='{$array['id']}'";
+            } else {
+                echo "陣列有空的";
+            }
+        } else {
+            $sql = "insert into `$this->table` ";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql .= $cols . "values" . $vals;
         }
-    }else{
-        $sql="insert into `$this->table` ";
-        $cols="(`" . join("`,`",array_keys($array)) . "`)";
-        $vals="('" . join("','",$array) ."')";
-        $sql.=$cols . "values" . $vals;
-    }
-    return$this->pdo->exec($sql);
+        return $this->pdo->exec($sql);
     }
     function del($id)
     {
@@ -85,7 +86,7 @@ class DB
     }
     function all($where = '', $other = '')
     {
-        $sql = "select *from `$this->table`";
+        $sql = "select * from `$this->table`";
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -97,7 +98,7 @@ class DB
     }
     private function math($math, $col, $array = '', $other = '')
     {
-        $sql = "select $math(`$col` from `$this->table`)";
+        $sql = "select $math(`$col`) from `$this->table`";
         $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
@@ -127,26 +128,27 @@ function to($url)
 $Title = new DB('titles');
 $Total = new DB('total');
 $Bottom = new DB('bottom');
-$News = new DB('news');
 $Image = new DB('image');
+$News = new DB('news');
 $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
 //
-if(isset($_GET['table'])){
-    $table=$_GET['table'];
-    $DB=${ucfirst($table)};
-}else{
-    $DB=$Title;
+if (isset($_GET['do'])) {
+    if(isset(${ucfirst($_GET['do'])})){
+        $DB = ${ucfirst($_GET['do'])};
+    }
+} else {
+    $DB = $Title;
 }
 ?>
 <?php
-$do=$_GET['do']??'main';
-$file="./front/{$do}.php";//or back
-if(file_exists($file)){
-    include $flie;
-}else{
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //or back
+if (file_exists($file)) {
+    include $file;
+} else {
     include "./front/main.php";
 }
 ?>
