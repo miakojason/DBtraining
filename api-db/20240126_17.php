@@ -25,12 +25,14 @@ class DB
                 $sql = "update `$this->table` set ";
                 $tmp = $this->a2s($array);
                 $sql .= join(",", $tmp);
-                $sql .= "where `id`='{$array['id']}'";
+                $sql .= " where `id`='{$array['id']}'";
+            } else {
+                echo "空的";
             }
         } else {
             $sql = "insert into `$this->table` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
-            $vals = "'" . join("','", $array) . "'";
+            $vals = "('" . join("','", $array) . "')";
             $sql .= $cols . "values" . $vals;
         }
         return $this->pdo->exec($sql);
@@ -39,14 +41,14 @@ class DB
     {
         $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
-            $tmp = $this->a2s($sql);
+            $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
         } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
             echo "x type";
         }
-        return $this->pdo->query($sql);
+        return $this->pdo->exec($sql);
     }
     function find($id)
     {
@@ -62,7 +64,7 @@ class DB
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
-    function sql_all($sql, $array, $other)
+    private function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
@@ -94,7 +96,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    function math($math, $col, $array = '', $other = '')
+    private function math($math, $col, $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
@@ -102,15 +104,15 @@ class DB
     }
     function sum($col = '', $where = '', $other = '')
     {
-        return $this->pdo->query('sum', $col, $where, $other);
+        return $this->math('sum', $col, $where, $other);
     }
     function max($col = '', $where = '', $other = '')
     {
-        return $this->pdo->query('max', $col, $where, $other);
+        return $this->math('max', $col, $where, $other);
     }
     function min($col = '', $where = '', $other = '')
     {
-        return $this->pdo->query('min', $col, $where, $other);
+        return $this->math('min', $col, $where, $other);
     }
 }
 function dd($array)
@@ -132,18 +134,20 @@ $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
-if(isset($_GET['table'])){
-    $DB=${ucfirst($_GET['table'])};
-}else{
-    $DB=$Title;
+if (isset($_GET['do'])) {
+    if (isset(${ucfirst($_GET['do'])})) {
+        $DB = ${ucfirst($_GET['do'])};
+    }
+} else {
+    $DB = $Title;
 }
 ?>
 <?php
-$do=$_GET['do']??'main';
-$file="./front/{$do}.php";//or back
-if(file_exists($file)){
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //or back
+if (file_exists($file)) {
     include $file;
-}else{
-    include "./front/main/php";
+} else {
+    include "./front/main.php";
 }
 ?>
