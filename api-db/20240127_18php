@@ -46,7 +46,7 @@ class DB
         } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數資料型態必須是數字或陣列";
+            echo "x type";
         }
         return $this->pdo->exec($sql);
     }
@@ -59,7 +59,7 @@ class DB
         } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數的資料型態必須是數字或陣列";
+            echo "x type";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
@@ -77,7 +77,7 @@ class DB
             }
             return $sql .= $other;
         } else {
-            echo "錯誤:沒有指定的資料表名稱";
+            echo "x table";
         }
     }
     function q($sql)
@@ -134,16 +134,14 @@ $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
-//這段大寫要放後面放$Ttite前面會先找不到錯誤訊息
 if (isset($_GET['do'])) {
     if (isset(${ucfirst($_GET['do'])})) {
         $DB = ${ucfirst($_GET['do'])};
-    }
+    } 
 } else {
     $DB = $Title;
 }
 ?>
-<!-- 檔案 -->
 <?php
 $do = $_GET['do'] ?? 'main';
 $file = "./front/{$do}.php"; //or back
