@@ -11,7 +11,7 @@ class DB
         $this->table = $table;
         $this->pdo = new PDO($this->dsn, 'root', '');
     }
-    function a2s($array)
+    private function a2s($array)
     {
         foreach ($array as $col => $value) {
             $tmp[] = "`$col`='$value'";
@@ -62,7 +62,7 @@ class DB
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
-    function sql_all($sql, $array, $other)
+    private function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
@@ -94,7 +94,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    function math($math, $col, $array = '', $other = '')
+    private function math($math, $col, $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
