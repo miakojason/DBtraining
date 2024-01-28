@@ -8,4 +8,3 @@ if (isset($_FILES['img']['tmp_name'])) {
 }
 $DB->save($row);
 to("../back.php?do=$table");
-?>
