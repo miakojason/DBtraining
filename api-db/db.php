@@ -156,7 +156,7 @@ if (file_exists($file)) {
 <!-- 分頁 -->
 <?php
 $total = $DB->count();
-$div = 5;
+$div = 3; //or5
 $pages = ceil($total / $div);
 $now = $_GET['p'] ?? 1;
 $start = ($now - 1) * $div;
@@ -177,7 +177,6 @@ for ($i = 1; $i <= $pages; $i++) {
 }
 if ($now < $pages) {
     $next = $now + 1;
-    echo "<a href='?do=$do&p=$next'>><a/>";
+    echo "<a href='?do=$do&p=$next'>></a>";
 }
-
 ?>
