@@ -22,7 +22,7 @@ class DB
     {
         if (isset($array['id'])) {
             if (!empty($array)) {
-                $sql = "update from `$this->table` set ";
+                $sql = "update `$this->table` set ";
                 $tmp = $this->a2s($array);
                 $sql .= join(",", $tmp);
                 $sql .= " where `id`='{$array['id']}'";
@@ -39,7 +39,7 @@ class DB
     }
     function del($id)
     {
-        $sql = "delete from `$this->table` ";
+        $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
@@ -82,7 +82,7 @@ class DB
     }
     function q($sql)
     {
-        $sql = $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
     function all($where = '', $other = '')
     {
@@ -125,29 +125,59 @@ function to($url)
 {
     header("location:$url");
 }
-$Title=new DB('titles');
-$Total=new DB('total');
-$Bottom=new DB('bottom');
-$News=new DB('news');
-$Image=new DB('image');
-$Mvim=new DB('mvim');
-$Menu=new DB('menu');
-$Ad=new DB('ad');
-$Admin=new DB('admin');
-if(isset($_GET['do'])){
-    if(isset(${ucfirst($_GET['do'])})){
-        $DB=${ucfirst($_GET['do'])};
+$Title = new DB('titles');
+$Total = new DB('total');
+$Bottom = new DB('bottom');
+$Image = new DB('image');
+$News = new DB('news');
+$Mvim = new DB('mvim');
+$Menu = new DB('menu');
+$Ad = new DB('ad');
+$Admin = new DB('admin');
+if (isset($_GET['do'])) {
+    if (isset(${ucfirst($_GET['do'])})) {
+        $DB = ${ucfirst($_GET['do'])};
     }
-}else{
-    $DB=$Title;
+} else {
+    $DB = $Title;
+}
+if (!isset($_SESSION['visited'])) {
+    $Total->q("update `total` set `total` = `total`+1 where `id`=1");
+    $_SESSION['visited'] = 1;
 }
 ?>
 <?php
-$do=$_GET['do']??'main';
-$file="./front/{$do}.php";//or back
-if(file_exists($file)){
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //or back
+if (file_exists($file)) {
     include $file;
-}else{
+} else {
     include "./front/main.php";
+}
+?>
+<?php
+$total = $DB->count();
+$div = 3; //or5
+$pages = ceil($total / $div);
+$now = $_GET['p'] ?? 1;
+$start = ($now - 1) * $div;
+$rows = $DB->all(" limit $start,$div");
+foreach ($rows as $row) {
+?>
+<?php
+}
+?>
+<?php
+if ($now > 1) {
+    $prev = $now - 1;
+    echo "<a href='?do=$do&p=$prev'><</a>";
+}
+for ($i = 1; $i <= $pages; $i++) {
+    $fontsize = ($now == $i) ? '24px' : '16px';
+    echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
+}
+if ($now < $pages) {
+    $next = $now + 1;
+    echo "<a href='?do=$do&p=$next'>></a>";
 }
 ?>
