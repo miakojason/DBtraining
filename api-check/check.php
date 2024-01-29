@@ -5,10 +5,5 @@ if($Admin->count(['acc'=>$_POST['acc'],'pw'=>$_POST['pw']])>0){
 }else{
     to("../index.php?do=login&error=帳號密碼錯誤");
 }
-if($Admin->count(['acc'=>$_POST['acc'],'pw'=>$_POST['pw']])>0){
-$_SESSION['login']=$_POST['acc'];
-to("../back.php");
-}else{
-    to("../index.php?do=;ogin&error=帳號密碼錯誤");
-}
+
 ?>
