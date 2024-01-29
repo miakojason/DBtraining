@@ -3,7 +3,7 @@ date_default_timezone_set("Asia/Taipei");
 session_start();
 class DB
 {
-    protected $dsn = "mysql:host=localhosot;charset=utf8;dbname=db08;";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=db08;";
     protected $pdo;
     protected $table;
     public function __construct($table)
@@ -20,22 +20,22 @@ class DB
     }
     function save($array)
     {
-        if(isset($array['id'])){
-            if(!empty($array)){
-                $sql="update `$this->table` set ";
-                $tmp=$this->a2s($array);
-                $sql.=join(",",$tmp);
-                $sql.= " where `id`='{$array['id']}'";
-            }else{
-                echo"空的";
+        if (isset($array['id'])) {
+            if (!empty($array)) {
+                $sql = "update `$this->table` set ";
+                $tmp = $this->a2s($array);
+                $sql .= join(",", $tmp);
+                $sql .= " where `id`='{$array['id']}'";
+            } else {
+                echo "空的";
             }
-        }else{
-            $sql="insert into `$this->table` ";
-            $cols="(`" . join("`,`",array_keys($array)) ."`)";
-            $vals="('" . join("','",$array) . "')";
-            $sql.=$cols . "values" . $vals;
+        } else {
+            $sql = "insert into `$this->table` ";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql .= $cols . "values" . $vals;
         }
-        return$this->pdo->exec($sql);
+        return $this->pdo->exec($sql);
     }
     function del($id)
     {
@@ -96,7 +96,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    private function math($math, $col, $array, $other)
+    private function math($math, $col, $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
@@ -125,29 +125,55 @@ function to($url)
 {
     header("location:$url");
 }
-$Title=new DB('titles');
-$Total=new DB('total');
-$Bottom=new DB('bottom');
-$News=new DB('news');
-$Image=new DB('image');
-$Mvim=new DB('mvim');
-$Menu=new DB('menu');
-$Ad=new DB('ad');
-$Admin=new DB('admin');
-if(isset($_GET['do'])){
-    if(isset(${ucfirst($_GET['do'])})){
-        $DB=${ucfirst($_GET['do'])};
+$Title = new DB('titles');
+$Total = new DB('total');
+$Bottom = new DB('bottom');
+$Image = new DB('image');
+$News = new DB('news');
+$Mvim = new DB('mvim');
+$Menu = new DB('menu');
+$Ad = new DB('ad');
+$Admin = new DB('admin');
+if (isset($_GET['do'])) {
+    if (isset(${ucfirst($_GET['do'])})) {
+        $DB = ${ucfirst($_GET['do'])};
     }
-}else{
-    $DB=$Title;
+} else {
+    $DB = $Title;
 }
 ?>
 <?php
-$do=$_GET['do']??'main';
-$file="./front/{$do}.php";//or back
-if(file_exists($file)){
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //or back
+if (file_exists($file)) {
     include $file;
-}else{
+} else {
     include "./front/main.php";
+}
+?>
+<?php
+$total = $DB->count();
+$div = 3; //or5
+$pages = ceil($total / $div);
+$now = $_GET['p'] ?? 1;
+$start = ($now - 1) * $div;
+$rows = $DB->all(" limit $start,$div");
+foreach ($rows as $row) {
+?>
+<?php
+}
+?>
+<?php
+if ($now > 1) {
+    $prev = $now - 1;
+    echo "<a href='?do=$do&p=$prev'><</a>";
+}
+for ($i = 1; $i <= $pages; $i++) {
+    $fontsize = ($now == $i) ? '24px' : '16px';
+    echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
+}
+if ($now < $pages) {
+    $next = $now + 1;
+    echo "<a href='?do=$do&p=$next'>></a>";
 }
 ?>
