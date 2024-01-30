@@ -39,7 +39,7 @@ class DB
     }
     function del($id)
     {
-        $sql = "delete `$this->table` where ";
+        $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
@@ -52,7 +52,7 @@ class DB
     }
     function find($id)
     {
-        $sql = "select from `$this->table` where ";
+        $sql = "select * from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
@@ -128,8 +128,8 @@ function to($url)
 $Title = new DB('titles');
 $Total = new DB('total');
 $Bottom = new DB('bottom');
-$News = new DB('news');
 $Image = new DB('image');
+$News = new DB('news');
 $Mvim = new DB('mvim');
 $Menu = new DB('menu');
 $Ad = new DB('ad');
@@ -140,6 +140,10 @@ if (isset($_GET['do'])) {
     }
 } else {
     $DB = $Title;
+}
+if (!isset($_SESSION['visited'])) {
+    $Total->q("update `total` set `total` =`total`+1 where `id`=1");
+    $_SESSION['visited'] = 1;
 }
 ?>
 <?php
@@ -152,12 +156,12 @@ if (file_exists($file)) {
 }
 ?>
 <?php
-$total = $DB->find();
+$total = $DB->count();
 $div = 3; //or5
 $pages = ceil($total / $div);
 $now = $_GET['p'] ?? 1;
 $start = ($now - 1) * $div;
-$rows = $DB->find("limit $start,$div");
+$rows = $DB->all(" limit $start,$div");
 foreach ($rows as $row) {
 ?>
 <?php
@@ -169,7 +173,7 @@ if ($now > 1) {
     echo "<a href='?do=$do&p=$prev'><</a>";
 }
 for ($i = 1; $i <= $pages; $i++) {
-    $fontsize = ($now == 1) ? '24px' : '16px';
+    $fontsize = ($now == $i) ? '24px' : '16px';
     echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
 }
 if ($now < $pages) {
