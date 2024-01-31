@@ -46,7 +46,7 @@ class DB
         } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數資料型態必須是數字或陣列";
+            echo "x type";
         }
         return $this->pdo->exec($sql);
     }
@@ -59,7 +59,7 @@ class DB
         } elseif (is_numeric($id)) {
             $sql .= "`id`='$id'";
         } else {
-            echo "錯誤:參數的資料型態必須是數字或陣列";
+            echo "x type";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
@@ -77,7 +77,7 @@ class DB
             }
             return $sql .= $other;
         } else {
-            echo "錯誤:沒有指定的資料表名稱";
+            echo "x table";
         }
     }
     function q($sql)
@@ -135,7 +135,6 @@ $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
 
-//這段大寫要放後面放$Ttite前面會先找不到錯誤訊息
 if (isset($_GET['do'])) {
     if (isset(${ucfirst($_GET['do'])})) {
         $DB = ${ucfirst($_GET['do'])};
@@ -143,13 +142,11 @@ if (isset($_GET['do'])) {
 } else {
     $DB = $Title;
 }
-//total進站人數增加session
 if (!isset($_SESSION['visited'])) {
     $Total->q("update `total` set `total` = `total`+1 where `id`=1");
     $_SESSION['visited'] = 1;
 }
 ?>
-<!-- 檔案 -->
 <?php
 $do = $_GET['do'] ?? 'main';
 $file = "./front/{$do}.php"; //or back
@@ -159,7 +156,6 @@ if (file_exists($file)) {
     include "./front/main.php";
 }
 ?>
-<!-- 分頁 -->
 <?php
 $total = $DB->count();
 $div = 3; //or5
