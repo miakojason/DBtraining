@@ -5,4 +5,3 @@ if (isset($_SESSION['login'])) {
 if (isset($_GET['error'])) {
     echo "<script>alert('{$_GET['error']}')</script>";
 }
-?>
