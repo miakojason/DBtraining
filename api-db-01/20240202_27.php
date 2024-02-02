@@ -26,6 +26,8 @@ class DB
                 $tmp = $this->a2s($array);
                 $sql .= join(",", $tmp);
                 $sql .= " where `id`='{$array['id']}'";
+            } else {
+                echo "空的";
             }
         } else {
             $sql = "insert into `$this->table` ";
