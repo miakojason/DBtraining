@@ -152,7 +152,7 @@ if (!isset($_SESSION['visited'])) {
 <!-- 檔案 -->
 <?php
 $do = $_GET['do'] ?? 'main';
-$file = "./front/{$do}.php"; //or back
+$file = "./front/{$do}.php"; //back
 if (file_exists($file)) {
     include $file;
 } else {
@@ -162,7 +162,7 @@ if (file_exists($file)) {
 <!-- 分頁 -->
 <?php
 $total = $DB->count();
-$div = 3; //or5
+$div = 3; //5
 $pages = ceil($total / $div);
 $now = $_GET['p'] ?? 1;
 $start = ($now - 1) * $div;
