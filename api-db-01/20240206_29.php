@@ -3,7 +3,7 @@ date_default_timezone_set("Asia/Taipei");
 session_start();
 class DB
 {
-    protected $dsn = "mysql:host=loaclhost;charset=utf8;dbname=db08";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=db08";
     protected $pdo;
     protected $table;
     public function __construct($table)
@@ -11,7 +11,7 @@ class DB
         $this->table = $table;
         $this->pdo = new PDO($this->dsn, 'root', '');
     }
-    function a2s($array)
+    private function a2s($array)
     {
         foreach ($array as $col => $value) {
             $tmp[] = "`$col`='$value'";
@@ -22,14 +22,20 @@ class DB
     {
         if (isset($array['id'])) {
             if (!empty($array)) {
-                
+                $sql = "update `$this->table` set ";
+                $tmp = $this->a2s($array);
+                $sql .= join(",", $tmp);
+                $sql .= " where `id`='{$array['id']}'";
+            } else {
+                echo "空得";
             }
         } else {
-            $sql = "insert into `$this->table `";
+            $sql = "insert into `$this->table ` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
             $sql .= $cols . "values" . $vals;
         }
+        return $this->pdo->exec($sql);
     }
     function del($id)
     {
@@ -58,7 +64,7 @@ class DB
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
-    function sql_all($sql, $array, $other)
+    private function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
@@ -90,7 +96,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    function math($math, $col, $array = '', $other = '')
+    private function math($math, $col, $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
@@ -98,15 +104,15 @@ class DB
     }
     function sum($col = '', $where = '', $other = '')
     {
-        return $this->math("sum", $col, $where, $other);
+        return $this->math('sum', $col, $where, $other);
     }
     function max($col = '', $where = '', $other = '')
     {
-        return $this->math("max", $col, $where, $other);
+        return $this->math('max', $col, $where, $other);
     }
     function min($col = '', $where = '', $other = '')
     {
-        return $this->math("min", $col, $where, $other);
+        return $this->math('min', $col, $where, $other);
     }
 }
 function dd($array)
@@ -119,3 +125,67 @@ function to($url)
 {
     header("location:$url");
 }
+$Title = new DB('titles');
+$Total = new DB('total');
+$Bottom = new DB('bottom');
+$Image = new DB('image');
+$News = new DB('news');
+$Mvim = new DB('mvim');
+$Menu = new DB('menu');
+$Ad = new DB('ad');
+$Admin = new DB('admin');
+if (isset($_GET['do'])) {
+    if (isset(${ucfirst($_GET['do'])})) {
+        $DB = ${ucfirst($_GET['do'])};
+    }
+} else {
+    $DB = $Title;
+}
+if (!isset($_SESSION['visited'])) {
+    $Total->q("update `total` set `total` = `total`+1 where `id`=1");
+    $_SESSION['visited'] = 1;
+}
+?>
+<?php
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php"; //back
+if (file_exists($file)) {
+    include $file;
+} else {
+    include "./front/main.php";
+}
+?>
+<?php
+$total = $DB->count();
+$div = 3; //5
+$pages = ceil($total / $div);
+$now = $_GET['p'] ?? 1;
+$start = ($now - 1) * $div;
+$rows = $DB->all(" limit $start,$div");
+foreach ($rows as $row) {
+?>
+<?php
+}
+?>
+<?php
+if ($now > 1) {
+    $prev = $now - 1;
+    echo "<a href='?do=$do&p=$prev'><</a>";
+}
+for ($i = 1; $i <= $pages; $i++) {
+    $fontsize = ($now == $i) ? '24px' : '16px';
+    echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
+}
+if ($now < $pages) {
+    $next = $now + 1;
+    echo "<a href='?do=$do&p=$next'>></a>";
+}
+?>
+<!-- 02 -->
+<?php
+$Total = new DB('total');
+$News = new DB('news');
+$User = new DB('user');
+$Que = new DB('que');
+$Log = new DB('log');
+?>
