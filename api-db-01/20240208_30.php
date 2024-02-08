@@ -13,36 +13,94 @@ class DB
     }
     function a2s($array)
     {
+        foreach ($array as $col => $value) {
+            $tmp[] = "`$col`='$value'";
+        }
+        return $tmp;
     }
     function save($array)
     {
+        if (isset($array['id'])) {
+            if (!empty($array)) {
+                $sql = "update `$this->table` set ";
+                $tmp = $this->a2s($array);
+                $sql .= join(",", $tmp);
+                $sql .= " where `id`='{$array['id']}'";
+            }else{
+                echo "空的";
+            }
+        } else {
+            $sql = "insert into `$this->table` ";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql .= $cols . "values" . $vals;
+        }
+        return $this->pdo->exec($sql);
     }
     function del($id)
     {
+        $sql = "delete from `$this->table` where ";
+        if (is_array($id)) {
+            $tmp = $this->a2s($id);
+            $sql .= join(" && ", $tmp);
+        } elseif (is_numeric($id)) {
+            $sql .= "`id`='$id'";
+        } else {
+            echo "x type";
+        }
+        return $this->pdo->exec($sql);
     }
     function find($id)
     {
+        $sql = "select * from `$this->table` where ";
+        if (is_array($id)) {
+            $tmp = $this->a2s($id);
+            $sql .= join(" && ", $tmp);
+        } elseif (is_numeric($id)) {
+            $sql .= "`id`='$id'";
+        } else {
+            echo "x type";
+        }
+        $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        return $row;
     }
     function sql_all($sql, $array, $other)
     {
+        if (isset($this->table) && !empty($this->table)) {
+            if (is_array($array)) {
+                if (!empty($array)) {
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
+                }
+            } else {
+                $sql .= " $array ";
+            }
+            return $sql .= $other;
+        } else {
+            echo "x type";
+        }
     }
     function q($sql)
     {
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
     function all($sql)
     {
+        $sql = "select * from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
     function count($where = '', $other = '')
     {
-        $sql="select count(*) from `$this->table` ";
-        $sql=$this->sql_all($sql,$where,$other);
-        return$this->pdo->query($sql)->fetchColumn();
+        $sql = "select count(*) from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchColumn();
     }
     function math($math, $col, $array = '', $other = '')
     {
-        $sql="select $math(`$col`) from `$this->table` ";
-        $sql=$this->sql_all($sql,$array,$other);
-        return$this->pdo->query($sql)->fetchColumn();
+        $sql = "select $math(`$col`) from `$this->table` ";
+        $sql = $this->sql_all($sql, $array, $other);
+        return $this->pdo->query($sql)->fetchColumn();
     }
     function sum($col = '', $where = '', $other = '')
     {
