@@ -30,7 +30,7 @@ class DB
                 echo "空的";
             }
         } else {
-            $sql = "insert into `$this->table ` ";
+            $sql = "insert into `$this->table` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
             $sql .= $cols . "values" . $vals;

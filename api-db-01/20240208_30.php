@@ -11,7 +11,7 @@ class DB
         $this->table = $table;
         $this->pdo = new PDO($this->dsn, 'root', '');
     }
-    function a2s($array)
+    private function a2s($array)
     {
         foreach ($array as $col => $value) {
             $tmp[] = "`$col`='$value'";
@@ -64,7 +64,7 @@ class DB
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
-    function sql_all($sql, $array, $other)
+    private function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
@@ -84,7 +84,7 @@ class DB
     {
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    function all($where='',$other='')
+    function all($where = '', $other = '')
     {
         $sql = "select * from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
@@ -96,7 +96,7 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-    function math($math, $col, $array = '', $other = '')
+    private function math($math, $col, $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
@@ -104,15 +104,15 @@ class DB
     }
     function sum($col = '', $where = '', $other = '')
     {
-        return $this->math('sum', $where, $other);
-    }
-    function min($col = '', $where = '', $other = '')
-    {
-        return $this->math('min', $where, $other);
+        return $this->math('sum', $col, $where, $other);
     }
     function max($col = '', $where = '', $other = '')
     {
-        return $this->math('max', $where, $other);
+        return $this->math('max', $col, $where, $other);
+    }
+    function min($col = '', $where = '', $other = '')
+    {
+        return $this->math('min', $col, $where, $other);
     }
 }
 function dd($array)
@@ -147,7 +147,7 @@ if (!isset($_SESSION['visited'])) {
 }
 ?>
 <?php
-$do = $_GET['do'] ?? 'main'; //title
+$do = $_GET['do'] ?? 'main';//title
 $file = "./front/{$do}.php"; //back
 if (file_exists($file)) {
     include $file;
@@ -172,7 +172,6 @@ if ($now > 1) {
     $prev = $now - 1;
     echo "<a href='?do=$do&p=$prev'><</a>";
 }
-
 for ($i = 1; $i <= $pages; $i++) {
     $fontsize = ($now == $i) ? '24px' : '16px';
     echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
@@ -184,9 +183,9 @@ if ($now < $pages) {
 ?>
 <!-- 02 -->
 <?php
-$Total=new DB('total');
-$User=new DB('user');
-$News=new DB('news');
-$Que=new DB('que');
-$Log=new DB('log');
+$Total = new DB('total');
+$News = new DB('news');
+$User = new DB('user');
+$Que = new DB('que');
+$Log = new DB('log');
 ?>
