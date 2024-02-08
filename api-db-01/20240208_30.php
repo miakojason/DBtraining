@@ -84,7 +84,7 @@ class DB
     {
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    function all($sql)
+    function all($where='',$other='')
     {
         $sql = "select * from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
