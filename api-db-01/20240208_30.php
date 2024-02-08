@@ -26,7 +26,7 @@ class DB
                 $tmp = $this->a2s($array);
                 $sql .= join(",", $tmp);
                 $sql .= " where `id`='{$array['id']}'";
-            }else{
+            } else {
                 echo "空的";
             }
         } else {
@@ -125,3 +125,68 @@ function to($url)
 {
     header("location:$url");
 }
+$Title = new DB('titles');
+$Total = new DB('total');
+$Bottom = new DB('bottom');
+$Image = new DB('image');
+$News = new DB('news');
+$Mvim = new DB('mvim');
+$Menu = new DB('menu');
+$Ad = new DB('ad');
+$Admin = new DB('admin');
+if (isset($_GET['do'])) {
+    if (isset(${ucfirst($_GET['do'])})) {
+        $DB = ${ucfirst($_GET['do'])};
+    }
+} else {
+    $DB = $Title;
+}
+if (!isset($_SESSION['visited'])) {
+    $Total->q("update `total` set `total` = `total`+1 where `id`=1");
+    $_SESSION['visited'] = 1;
+}
+?>
+<?php
+$do = $_GET['do'] ?? 'main'; //title
+$file = "./front/{$do}.php"; //back
+if (file_exists($file)) {
+    include $file;
+} else {
+    include "./front/main.php";
+}
+?>
+<?php
+$total = $DB->count();
+$div = 3; //5
+$pages = ceil($total / $div);
+$now = $_GET['p'] ?? 1;
+$start = ($now - 1) * $div;
+$rows = $DB->all(" limit $start,$div");
+foreach ($rows as $row) {
+?>
+<?php
+}
+?>
+<?php
+if ($now > 1) {
+    $prev = $now - 1;
+    echo "<a href='?do=$do&p=$prev'><</a>";
+}
+
+for ($i = 1; $i <= $pages; $i++) {
+    $fontsize = ($now == $i) ? '24px' : '16px';
+    echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
+}
+if ($now < $pages) {
+    $next = $now + 1;
+    echo "<a href='?do=$do&p=$next'>></a>";
+}
+?>
+<!-- 02 -->
+<?php
+$Total=new DB('total');
+$User=new DB('user');
+$News=new DB('news');
+$Que=new DB('que');
+$Log=new DB('log');
+?>

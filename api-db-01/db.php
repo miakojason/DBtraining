@@ -150,7 +150,7 @@ if (!isset($_SESSION['visited'])) {
 ?>
 <!-- 檔案 -->
 <?php
-$do = $_GET['do'] ?? 'main';
+$do = $_GET['do'] ?? 'main';//title
 $file = "./front/{$do}.php"; //back
 if (file_exists($file)) {
     include $file;
