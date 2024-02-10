@@ -25,7 +25,7 @@ class DB
                 $sql = "update `$this->table` set ";
                 $tmp = $this->a2s($array);
                 $sql .= join(",", $tmp);
-                $sql .= " where `id`='{$array['id']}'";
+                $sql .= " where `id` = '{$array['id']}'";
             } else {
                 echo "空的";
             }
