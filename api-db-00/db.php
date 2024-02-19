@@ -192,4 +192,15 @@ $News = new DB('news');
 $User = new DB('user');
 $Que = new DB('que');
 $Log = new DB('log');
+// 判斷訪客的拜訪狀態，用來決定當日訪客人次是否需要增加
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date('Y-m-d')]) > 0) {
+        $total = $Total->find(['date' => date('Y-m-d')]);
+        $total['total']++;
+        $Total->save($total);
+    } else {
+        $Total->save(['total' => 1, 'date' => date('Y-m-d')]);
+    }
+    $_SESSION['visited'] = 1;
+}
 ?>
