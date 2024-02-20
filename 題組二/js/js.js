@@ -15,7 +15,6 @@ function reg() {
                     alert("帳號重覆")
                 } else {
                     $.post("./api/reg.php", user, (res) => {
-                        // location.reload(),
                         alert('註冊完成')
                     })
                 }
@@ -27,14 +26,14 @@ function reg() {
         alert("不可空白")
     }
 }
-function forget(){
-    $.post("./api/forget.php",{email:$("#email").val()},(res)=>{
+function forget() {
+    $.post("./api/forget.php", { email: $("#email").val() }, (res) => {
         $("#result").text(res)
     })
 }
-function more(){
-    let opt=`<div id="opt">選項
-                <input type="text" name="option[]">
+function more() {
+    let opt = `<div id ="opt">選項
+                <input type ="text" name="option[]">
             </div>`
     $("#opt").before(opt);
 }
