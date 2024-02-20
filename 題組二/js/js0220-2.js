@@ -15,7 +15,7 @@ function reg() {
                     alert("帳號重覆")
                 } else {
                     $.post("./api/reg.php", user, (res) => {
-                        alert('註冊完成')
+                        alert("註冊完成")
                     })
                 }
             })
@@ -33,7 +33,7 @@ function forget() {
 }
 function more() {
     let opt = `<div id ="opt">選項
-                    <input type ="text" name="option[]">
+                <input type ="text" name="option[]">
               </div>`
     $("#opt").before(opt);
 }
