@@ -4,7 +4,6 @@
     }
 
     .tag {
-        width: 100px;
         border: 1px solid black;
         background-color: lightgray;
     }
