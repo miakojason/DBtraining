@@ -2,10 +2,15 @@ function clean() {
     $("input[type='text'],input[type='password'],input[type='number'],input[type='radio']").val("");
 }
 function more() {
-    let opt = `<div id ="opt">選項
-                <input type ="text" name="optione[]">
+    let opt = `<div id="opt">選項
+                <input type ="text" name="option[]">
               </div>`
     $("#opt").before(opt);
+}
+function forget() {
+    $.post("./api/forget.php", { email: $("#email").val() }, (res) => {
+        $("#result").text(res)
+    })
 }
 function reg() {
     let user = {
@@ -14,7 +19,7 @@ function reg() {
         pw2: $("#pw2").val(),
         email: $("#email").val()
     }
-    if (user.acc != "" && user.pw != "" && user.pw2 != "" && user.email != "") {
+    if (user.acc != '' && user.pw != '' && user.pw2 != '' && user.email != '') {
         if (user.pw == user.pw2) {
             $.post("./api/chk_acc.php", { acc: user.acc }, (res) => {
                 if (parseInt(res) == 1) {
@@ -31,9 +36,4 @@ function reg() {
     } else {
         alert("不可空白")
     }
-}
-function forget() {
-    $.post("./api/forget.php", { email: $("#email").val() }, (res) => {
-        $("#result").text(res)
-    })
 }
