@@ -144,3 +144,39 @@ if (!isset($_SESSION['visited'])) {
     $Total->q("update `total` set `total` = `total`+1 where `id`=1");
     $_SESSION['visited'] = 1;
 }
+?>
+<?php
+$do = $_GET['do'] ?? 'main';
+$file = "./front/{$do}.php";
+if (file_exists($file)) {
+    include $file;
+} else {
+    include "./front/main.php";
+}
+?>
+<?php
+$total = $DB->count();
+$div = 3;
+$pages = ceil($total / $div);
+$now = $_GET['p'] ?? 1;
+$start = ($now - 1) * $div;
+$rows = $DB->all(" limit $start,$div");
+foreach ($rows as $row) {
+?>
+    <?php
+}
+    ?>
+<?php
+if ($now > 1) {
+    $prev = $now - 1;
+    echo "<a href='?do=$do&p=$prev'><</a>";
+}
+for ($i = 1; $i <= $pages; $i++) {
+    $fontsize = ($now == $i) ? '24px' : '16px';
+    echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
+}
+if ($now < $pages) {
+    $next = $now + 1;
+    echo "<a href='?do=$do&p=$next'>></a>";
+}
+?>
