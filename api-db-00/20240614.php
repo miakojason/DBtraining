@@ -180,3 +180,35 @@ if ($now < $pages) {
     echo "<a href='?do=$do&p=$next'>></a>";
 }
 ?>
+<!-- 02 -->
+<?php
+$Total = new DB('total');
+$News = new DB('news');
+$User = new DB('user');
+$Que = new DB('que');
+$Log = new DB('log');
+// 判斷訪客的拜訪狀態，用來決定當日訪客人次是否需要增加
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date('Y-m-d')]) > 0) {
+        $total = $Total->find(['date' => date('Y-m-d')]);
+        $total['total']++;
+        $Total->save($total);
+    } else {
+        $Total->save(['total' => 1, 'date' => date('Y-m-d')]);
+    }
+    $_SESSION['visited'] = 1;
+}
+?>
+<!-- 03 -->
+ <?php
+$Poster=new DB('poster');
+$Orders=new DB('orders');
+$Movie=new DB('movie');
+$sess=[
+    1=>'14:00~16:00',
+    1=>'16:00~18:00',
+    1=>'18:00~20:00',
+    1=>'20:00~22:00',
+    1=>'22:00~24:00'
+];
+ ?>
