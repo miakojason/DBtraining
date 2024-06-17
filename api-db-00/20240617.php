@@ -25,9 +25,7 @@ class DB
                 $sql = "update `$this->table` set ";
                 $tmp = $this->a2s($array);
                 $sql .= join(",", $tmp);
-                $sql .= " where `id` ='{$array['id']}'";
-            } else {
-                echo "空的";
+                $sql .= "where `id`='{$array['id']}'";
             }
         } else {
             $sql = "insert into `$this->table` ";
@@ -134,14 +132,13 @@ $Menu = new DB('menu');
 $Ad = new DB('ad');
 $Admin = new DB('admin');
 if (isset($_GET['do'])) {
-    if (isset(${ucfirst($_GET['do'])})) {
-        $DB = ${ucfirst($_GET['do'])};
-    }
+    if (isset(${ucfirst($_GET['do'])}));
+    $DB = ${ucfirst($_GET['do'])};
 } else {
     $DB = $Title;
 }
 if (!isset($_SESSION['visited'])) {
-    $Total->q("update `total` set `total` = `total`+1 where `id`=1");
+    $Total->q("update `total` set `total` = `total`+1 where `id` = 1");
     $_SESSION['visited'] = 1;
 }
 ?>
@@ -169,38 +166,37 @@ foreach ($rows as $row) {
 <?php
 if ($now > 1) {
     $prev = $now - 1;
-    echo "<a href='?do=$do&p=$prev'><</a>";
+    echo "<a href='?do=$do*p=$prev'><</a>";
 }
 for ($i = 1; $i <= $pages; $i++) {
     $fontsize = ($now == $i) ? '24px' : '16px';
-    echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
+    echo "<a href='?do=$do*p=$i'style='font-size:$fontsize'>$i</a>";
 }
 if ($now < $pages) {
     $next = $now + 1;
-    echo "<a href='?do=$do&p=$next'>></a>";
+    echo "<a href='?do=$do*p=$next'>></a>";
 }
 ?>
 <!-- 02 -->
 <?php
-$Total = new DB('total');
-$News = new DB('news');
-$User = new DB('user');
-$Que = new DB('que');
-$Log = new DB('log');
-// 判斷訪客的拜訪狀態，用來決定當日訪客人次是否需要增加
-if (!isset($_SESSION['visited'])) {
-    if ($Total->count(['date' => date('Y-m-d')]) > 0) {
-        $total = $Total->find(['date' => date('Y-m-d')]);
-        $total['total']++;
-        $Total->save($total);
-    } else {
-        $Total->save(['total' => 1, 'date' => date('Y-m-d')]);
+$Total=new DB('total');
+$News=new DB('news');
+$User=new DB('user');
+$Que=new DB('que');
+$Log=new DB('log');
+if(!isset($_SESSION['visited'])){
+    if($Total->count(['date'=>date("Y-m-d")])>0){
+        $row=$Total->find(['date'=>date("y-m-d")]);
+        $row['total']++;
+        $Total->save($row);
+    }else{
+        $Total->save(['date'=>date("Y-m-d"),'total'=>1]);
     }
-    $_SESSION['visited'] = 1;
+    $_SESSION['visited']=1;
 }
 ?>
 <!-- 03 -->
- <?php
+<?php
 $Poster=new DB('poster');
 $Orders=new DB('orders');
 $Movie=new DB('movie');
@@ -209,6 +205,6 @@ $sess=[
     2=>'16:00~18:00',
     3=>'18:00~20:00',
     4=>'20:00~22:00',
-    5=>'22:00~24:00'
+    5=>'22:00~24:00',
 ];
- ?>
+?>
