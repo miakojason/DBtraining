@@ -9,7 +9,7 @@ class DB
     public function __construct($table)
     {
         $this->table = $table;
-        $this->pdo = new PDO($this->dsn, '', '');
+        $this->pdo = new PDO($this->dsn, 'root', '');
     }
     private function a2s($array)
     {
@@ -44,7 +44,7 @@ class DB
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
         } elseif (is_numeric($id)) {
-            $sql = "`id`='$id'";
+            $sql .= "`id`='$id'";
         } else {
             echo "x type";
         }
@@ -57,7 +57,7 @@ class DB
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
         } elseif (is_numeric($id)) {
-            $sql = "`id`='$id'";
+            $sql .= "`id`='$id'";
         } else {
             echo "x type";
         }
@@ -72,7 +72,7 @@ class DB
                     $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
-                $sql .= " $array";
+                $sql .= " $array ";
             }
             return $sql .= $other;
         } else {
@@ -160,7 +160,7 @@ $div = 3;
 $pages = ceil($total / $div);
 $now = $_GET['p'] ?? 1;
 $start = ($now - 1) * $div;
-$rows = $DB->all(" limie $start,$div");
+$rows = $DB->all(" limit $start,$div");
 foreach ($rows as $row) {
 ?>
 <?php
@@ -171,7 +171,7 @@ if ($now > 1) {
     $prev = $now - 1;
     echo "<a href='?do=$do&p=$prev'><</a>";
 }
-for ($i = 1; $i <= -$pages; $i++) {
+for ($i = 1; $i <= $pages; $i++) {
     $fontsize = ($now == $i) ? '24px' : '16px';
     echo "<a href='?do=$do&p=$i'style='font-size:$fontsize'>$i</a>";
 }
@@ -180,5 +180,34 @@ if ($now < $pages) {
     echo "<a href='?do=$do&p=$next'>></a>";
 }
 ?>
-<?php ?>
-<?php ?>
+<!-- 02 -->
+<?php
+$Total = new DB('total');
+$News = new DB('news');
+$User = new DB('user');
+$Que = new DB('que');
+$Log = new DB('log');
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+        $row = $Total->find(['date' => date("Y-m-d")]);
+        $row['total']++;
+        $Total->save($row);
+    } else {
+        $Total->save(['date' => date("Y-m-d"), 'total' => 1]);
+    }
+    $_SESSION['visited'] = 1;
+}
+?>
+<!-- 03 -->
+<?php
+$Poster = new DB('poster');
+$Order = new DB('orders');
+$Movie = new DB('movie');
+$sess = [
+    1 => '14:00~16:00',
+    2 => '16:00~18:00',
+    3 => '18:00~20:00',
+    4 => '20:00~22:00',
+    5 => '22:00~24:00'
+];
+?>
