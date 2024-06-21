@@ -183,8 +183,8 @@ if ($now < $pages) {
 <!-- 02 -->
 <?php
 $Total = new DB('total');
-$News = new DB('news');
 $User = new DB('user');
+$News = new DB('news');
 $Que = new DB('que');
 $Log = new DB('log');
 if (!isset($_SESSION['visited'])) {
@@ -200,9 +200,9 @@ if (!isset($_SESSION['visited'])) {
 ?>
 <!-- 03 -->
 <?php
-$Poster = new DB('poster');
-$Movie = new DB('movie');
-$Order = new DB('order');
+$poster = new DB('poster');
+$movie = new DB('movie');
+$order = new DB('orders');
 $sess = [
     1 => '14:00~16:00',
     2 => '16:00~18:00',
@@ -210,5 +210,4 @@ $sess = [
     4 => '20:00~22:00',
     5 => '22:00~24:00'
 ];
-
 ?>
