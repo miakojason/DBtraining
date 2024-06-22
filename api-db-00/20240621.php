@@ -200,9 +200,9 @@ if (!isset($_SESSION['visited'])) {
 ?>
 <!-- 03 -->
 <?php
-$poster = new DB('poster');
-$movie = new DB('movie');
-$order = new DB('orders');
+$Poster = new DB('poster');
+$Movie = new DB('movie');
+$Orders = new DB('orders');
 $sess = [
     1 => '14:00~16:00',
     2 => '16:00~18:00',
